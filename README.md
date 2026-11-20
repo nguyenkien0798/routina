@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Routina
 
-## Getting Started
+Personal habit & task tracker. Make every day count.
 
-First, run the development server:
+Routina is **local-first**: accounts, habits, tasks, and notification marks live in **IndexedDB on this browser** (`routina_db`). There is no cloud sync — signing in on another device will not open the same account. Export a JSON backup before switching browsers or machines.
+
+## Features
+
+- **Habits** — recurring check-ins, streaks, colors & icons, drag reorder
+- **Tasks** — one-off work with start/due, priority, and status
+- **Today** — combined view for today’s habits and due work
+- **Calendar & insights** — heatmap and simple charts
+- **Local accounts** — register / sign in on this device only (Dexie)
+- **Reminders (2-5-8)** — for each task, checkpoints at **20% / 50% / 80%** of that task’s own start→due window (e.g. a 24h task reminds at ~4.8h, 12h, 19.2h). Marks are stored in IndexedDB per user/day. Browser notifications fire only while Routina is open
+- **i18n** — English and Vietnamese
+- **Backup** — Settings → Export / Import JSON
+
+## Stack
+
+- Next.js (App Router) and React
+- TypeScript (strict)
+- Tailwind CSS
+- Zustand, Dexie.js (IndexedDB), React Hook Form, Zod
+- Recharts, date-fns, Lucide, Sonner
+- Vitest
+
+## Scripts
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run test
+npm run typecheck
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Data
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| What | Where |
+| --- | --- |
+| Users, sessions, habits, tasks, check-ins | IndexedDB `routina_db` |
+| Notification read / browser-shown marks | IndexedDB `notificationDays` (per user + date) |
 
-## Learn More
+Clearing site data in the browser removes Routina accounts and workspaces for that origin. Use **Settings → Export JSON** before switching devices.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Demo / sample habits are optional and never overwrite an existing workspace.

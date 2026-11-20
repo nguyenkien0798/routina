@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  habits       Habit[]
+  checkIns     CheckIn[]
+  tasks        Task[]
+  settings     Settings?
+}
+
+model Habit {
+  id          String   @id
+  userId      String
+  name        String
+  description String   @default("")
+  icon        String
+  color       String
+  category    String
+  frequency   String
+  startDate   String
+  target      String?
+  archived    Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   String
+  updatedAt   String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checkIns    CheckIn[]
+
+  @@index([userId, sortOrder])
+}
+
+model CheckIn {
+  id        String @id
+  userId    String
+  habitId   String
+  date      String
+  completed Boolean @default(true)
+  createdAt String
+  updatedAt String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habit     Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, habitId, date])
+  @@index([userId])
+}
+
+model Task {
+  id          String  @id
+  userId      String
+  title       String
+  notes       String  @default("")
+  startDate   String
+  startTime   String  @default("08:30")
+  dueDate     String
+  dueTime     String  @default("17:30")
+  status      String  @default("open")
+  priority    String  @default("none")
+  completedAt String?
+  createdAt   String
+  updatedAt   String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status, dueDate])
+}
+
+model Settings {
+  userId                String  @id
+  theme                 String  @default("system")
+  weekStartsOn          Int     @default(1)
+  browserNotifications  Boolean @default(false)
+  locale                String  @default("en")
+  createdAt             String
+  updatedAt             String
+  user                  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
